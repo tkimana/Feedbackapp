@@ -4,7 +4,7 @@ from send_mail import send_mail
 
 app=Flask(__name__)
 
-ENV= 'dev'
+ENV= 'prod'
 
 if ENV=='dev':
     app.debug=True
@@ -12,11 +12,9 @@ if ENV=='dev':
 
 else:
     app.debug=False
-    app.config['SQLALCHEMY_DATABASE_URI']=''
+    app.config['SQLALCHEMY_DATABASE_URI']='postgres://mrgslqqfrefous:271ace6f50a3dd2be48d8cc9b19b8e9d82046654d468256e85ac857f436237c9@ec2-54-198-252-9.compute-1.amazonaws.com:5432/dfoivaqcbenk0t'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-
-
 
 db= SQLAlchemy(app)
 
@@ -48,7 +46,7 @@ def submit():
         if customer == '' or dealer == '':
             return render_template('index.html', message='Please enter the required fields')
         if db.session.query(FeedBack).filter(FeedBack.customer==customer).count()==0:
-            data= FeedBack(customer, dealer, rating, comments)
+            data=FeedBack(customer, dealer, rating, comments)
             db.session.add(data)
             db.session.commit()
             send_mail(customer, dealer, rating, comments)
